@@ -17,7 +17,8 @@
     @foreach ($news as $item)
     <div class="col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm">
-            <img src="https://picsum.photos/600/300?random={{ $item->id }}" class="card-img-top" alt="{{ $item->title }}">
+
+            <img src="{{ $item->image }}" class="card-img-top" alt="{{ $item->title }}">
             <div class="card-body d-flex flex-column"> {{-- ใช้ flex column --}}
                 <h5 class="card-title">{{ $item->title }}</h5>
                 <p class="card-text">{{ Str::limit($item->content, 100) }}</p>
