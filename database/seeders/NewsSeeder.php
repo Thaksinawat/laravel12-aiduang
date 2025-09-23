@@ -12,7 +12,7 @@ class NewsSeeder extends Seeder
         News::insert([
             [
                 'title' => 'สรุปผลงานลูกยางสาวไทย หลังจบชิงแชมป์โลก 2025 อันดับโลกพุ่ง รั้งเบอร์ 3 เอเชีย',
-                'content' => 'ทีมวอลเลย์บอลหญิงไทยทำผลงานโดดเด่นในศึกชิงแชมป์โลก 2025 พร้อมขยับอันดับโลกขึ้นไปอยู่ที่ 3 ของเอเชีย...',
+                'content' => 'บลาๆๆๆ',
                 'source_url' => 'https://thethaiger.com/th/news/1450293/',
                 'image' =>'https://thethaiger.com/th/wp-content/uploads/2025/09/Summary-of-the-performance-of-the-Thai-womens-volleyball-team-after-the-2025-World-Championship.-World-rankings-rise-to-No.-3-in-Asia.jpg',
             ],

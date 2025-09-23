@@ -4,6 +4,7 @@
 
 @section('content')
 <h1 class="mb-3">{{ $news->title }}</h1>
+<img src="{{ $news->image }}" class="card-img-top" alt="{{ $news->title }}">
 <p class="text-muted">
 
 </p>

@@ -23,7 +23,6 @@
                 <h5 class="card-title">{{ $item->title }}</h5>
                 <p class="card-text">{{ Str::limit($item->content, 100) }}</p>
 
-                {{-- ✅ ปุ่มจะอยู่ล่างสุดเสมอ --}}
                 <a href="{{ route('news.show', $item->id) }}" class="btn btn-primary btn-sm mt-auto">
                     อ่านต่อ
                 </a>
