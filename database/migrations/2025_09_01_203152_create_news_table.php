@@ -13,8 +13,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('source_url');
+            $table->string('image_url')->nullable(); // เพิ่มฟิลด์นี้
             $table->timestamps();
-
         });
     }
     public function down(): void

@@ -1,41 +1,65 @@
-{{-- resources/views/news/index.blade.php --}}
+
 @extends('layouts.app')
-
-{{-- กำหนด Title ของหน้านี้ --}}
-@section('title', 'ข่าวทั้งหมดที่น่าสนใจ')
-
-{{-- เริ่มส่วนของเนื้อหา --}}
 @section('content')
-
-<h2 class="mb-4 border-start border-4 border-primary ps-3 fw-bold text-dark">
-    ข่าวทั้งหมดที่น่าสนใจ
-</h2>
-
-<div class="row g-4">
-
-    {{-- ✅ ใช้ Loop จาก Controller เพื่อแสดงข่าวทั้งหมด --}}
-    @foreach ($news as $item)
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm">
-
-            <img src="{{ $item->image }}" class="card-img-top" alt="{{ $item->title }}">
-            <div class="card-body d-flex flex-column"> {{-- ใช้ flex column --}}
-                <h5 class="card-title">{{ $item->title }}</h5>
-                <p class="card-text">{{ Str::limit($item->content, 100) }}</p>
-
-                <a href="{{ route('news.show', $item->id) }}" class="btn btn-primary btn-sm mt-auto">
-                    อ่านต่อ
-                </a>
+<style>
+    .news-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    .news-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+        transition: box-shadow 0.2s, transform 0.2s;
+        position: relative;
+    }
+    .news-card:hover {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+        transform: translateY(-4px) scale(1.02);
+    }
+    .news-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        display: block;
+    }
+    .news-title:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+    .news-snippet {
+        color: #444;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .news-date {
+        font-size: 0.9rem;
+        color: #888;
+        position: absolute;
+        bottom: 1rem;
+        right: 1.5rem;
+    }
+</style>
+<h1 style="font-size:2rem; color:#222; margin-bottom:1.5rem;">ข่าวทั้งหมด</h1>
+<div class="news-list">
+    @foreach($news as $item)
+        <div class="news-card">
+            @if($item->image_url)
+                <img src="{{ $item->image_url }}" alt="image" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px 8px 0 0;margin-bottom:1rem;">
+            @endif
+            <a href="{{ route('news.show', $item->id) }}" class="news-title">{{ $item->title }}</a>
+            <div class="news-snippet">
+                {{ Str::limit(strip_tags($item->content), 80) }}
             </div>
+            @if($item->created_at)
+                <div class="news-date">{{ $item->created_at->format('d/m/Y') }}</div>
+            @endif
         </div>
-    </div>
     @endforeach
-
 </div>
-
-{{-- ✅ แสดงตัวแบ่งหน้า --}}
-<div class="mt-4">
-    {{ $news->links() }}
-</div>
-
 @endsection

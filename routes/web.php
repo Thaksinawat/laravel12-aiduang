@@ -1,11 +1,11 @@
-<?php
 
+<?php
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\NewsController;
-use Illuminate\Http\Request; // ✅ ใช้ตัวนี้แทน
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Product; // ✅ ต้อง import มาด้วย
+use App\Models\Product;
+
 
 // หน้าแรก
 Route::get('/', function () {
@@ -96,12 +96,11 @@ Route::get('product-index', function () {
 
 // chart
 Route::get('barchart', fn() => view('barchart'))->name('barchart');
-
-// news routes
+use App\Http\Controllers\NewsController;
+// public news routes
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
-Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
+Route::post('/news/{id}/update-date', [NewsController::class, 'updateDate'])->name('news.updateDate');
 
 // product submit
 Route::post('/product-submit', function (Request $request) {
@@ -122,3 +121,30 @@ Route::post('/product-submit', function (Request $request) {
 
     return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
 })->name('product.submit');
+
+// product submit
+Route::post('/product-submit', function (Request $request) {
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'price' => 'required|numeric|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('uploads', 'public');
+        $url = Storage::url($imagePath);
+        $data["image"] = $url;
+    }
+
+    Product::create($data);
+
+    return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
+})->name('product.submit');
+
+
+Route::prefix('admin')->middleware('admin')->group(function () {
+    Route::resource('news', \App\Http\Controllers\Admin\NewsController::class, [
+        'as' => 'admin'
+    ]);
+});

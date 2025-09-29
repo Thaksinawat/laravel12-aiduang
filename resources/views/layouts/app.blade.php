@@ -10,11 +10,8 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('news.index') }}">📰 Laravel News</a>
-        </div>
-    </nav>
+
+    @include('components.navbar')
 
     <main class="container">
         @yield('content')

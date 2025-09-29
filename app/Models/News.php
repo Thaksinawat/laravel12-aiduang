@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class News extends Model
 {
 
-    protected $fillable = ['title', 'content', 'image_url']; 
+    protected $fillable = ['title', 'content', 'image_url', 'source_url', 'created_at', 'updated_at']; 
     
 }

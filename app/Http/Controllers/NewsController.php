@@ -1,43 +1,28 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\News;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     public function index()
     {
-        $news = News::latest()->paginate(10);
-
-        return view('news.index', ['news' => $news]);
+        $news = News::all();
+        return view('news.index', compact('news'));
     }
 
-    public function show(string $id)
+    public function show($id)
     {
         $news = News::findOrFail($id);
         return view('news.show', compact('news'));
     }
 
-    public function create()
+    public function updateDate($id)
     {
-        return view('news.create');
-    }
-
-    public function store(Request $request)
-    {
-
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
-
-        News::create([
-            'title' => $request->title,
-            'content' => $request->content,
-        ]);
-
-        return redirect()->route('news.index')->with('success', 'เพิ่มข่าวเรียบร้อยแล้ว!');
+        $news = News::findOrFail($id);
+        $news->created_at = now();
+        $news->save();
+        return redirect()->route('news.show', $news->id)->with('success', 'อัพเดทวันที่สร้างข่าวเรียบร้อยแล้ว');
     }
 }
