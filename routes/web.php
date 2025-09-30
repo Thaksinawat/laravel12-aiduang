@@ -1,11 +1,12 @@
-
 <?php
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
-
+use App\Http\Controllers\NewsController as PublicNewsController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 
 // หน้าแรก
 Route::get('/', function () {
@@ -57,7 +58,7 @@ Route::get("/gallery/bird", fn() => view("test/bird", [
 ]));
 
 Route::get("/gallery/cat", fn() => view("test/cat", [
-    "cat" => "http://www.onyxtruth.com/wp-content/uploads/2017/06/black-panther-movie-onyx-truth.jpg"
+    "/uploads/2017/06/black-panther-movie-onyx-truth.jpg"
 ]));
 
 // ตัวอย่าง view ธรรมดา
@@ -96,11 +97,11 @@ Route::get('product-index', function () {
 
 // chart
 Route::get('barchart', fn() => view('barchart'))->name('barchart');
-use App\Http\Controllers\NewsController;
+
 // public news routes
-Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
-Route::post('/news/{id}/update-date', [NewsController::class, 'updateDate'])->name('news.updateDate');
+Route::get('/news', [PublicNewsController::class, 'index'])->name('news.index');
+Route::get('/news/{id}', [PublicNewsController::class, 'show'])->name('news.show');
+Route::post('/news/{id}/update-date', [PublicNewsController::class, 'updateDate'])->name('news.updateDate');
 
 // product submit
 Route::post('/product-submit', function (Request $request) {
@@ -122,29 +123,10 @@ Route::post('/product-submit', function (Request $request) {
     return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
 })->name('product.submit');
 
-// product submit
-Route::post('/product-submit', function (Request $request) {
-    $data = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'price' => 'required|numeric|min:0',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('uploads', 'public');
-        $url = Storage::url($imagePath);
-        $data["image"] = $url;
-    }
-
-    Product::create($data);
-
-    return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
-})->name('product.submit');
-
-
-Route::prefix('admin')->middleware('admin')->group(function () {
-    Route::resource('news', \App\Http\Controllers\Admin\NewsController::class, [
-        'as' => 'admin'
-    ]);
+// admin news routes
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
+    Route::resource('news', AdminNewsController::class);
 });
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth']);

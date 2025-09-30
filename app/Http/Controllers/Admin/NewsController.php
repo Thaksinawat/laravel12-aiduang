@@ -8,14 +8,9 @@ use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('admin'); // ใช้ middleware ตรวจสอบสิทธิ์แอดมิน
-    }
-
     public function index()
     {
-        $news = News::all();
+        $news = News::latest()->get();
         return view('admin.news.index', compact('news'));
     }
 
@@ -26,57 +21,34 @@ class NewsController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'image_url' => 'nullable|string',
-            'source_url' => 'nullable|string',
-        ]);
-        News::create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'image_url' => $request->image_url,
-            'source_url' => $request->source_url,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        return redirect()->route('admin.news.index')->with('success', 'เพิ่มข่าวสำเร็จ');
+        News::create($request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'published_at' => 'nullable|date',
+        ]));
+
+        return redirect()->route('admin.news.index')->with('success', 'เพิ่มข่าวเรียบร้อยแล้ว');
     }
 
-    public function edit($id)
+    public function edit(News $news)
     {
-        $news = News::findOrFail($id);
         return view('admin.news.edit', compact('news'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, News $news)
     {
-        $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'image_url' => 'nullable|string',
-            'source_url' => 'nullable|string',
-        ]);
-        $news = News::findOrFail($id);
-        $news->update([
-            'title' => $request->title,
-            'content' => $request->content,
-            'image_url' => $request->image_url,
-            'source_url' => $request->source_url,
-            'updated_at' => now(),
-        ]);
-        return redirect()->route('admin.news.index')->with('success', 'แก้ไขข่าวสำเร็จ');
-    }
-    public function show($id)
-    {
-        $news = News::findOrFail($id);
-        return view('admin.news.show', compact('news'));
+        $news->update($request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'published_at' => 'nullable|date',
+        ]));
+
+        return redirect()->route('admin.news.index')->with('success', 'แก้ไขข่าวเรียบร้อยแล้ว');
     }
 
-    public function destroy($id)
+    public function destroy(News $news)
     {
-        $news = News::findOrFail($id);
         $news->delete();
-        return redirect()->route('admin.news.index')->with('success', 'ลบข่าวสำเร็จ');
+        return redirect()->route('admin.news.index')->with('success', 'ลบข่าวเรียบร้อยแล้ว');
     }
 }
