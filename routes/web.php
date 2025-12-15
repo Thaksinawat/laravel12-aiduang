@@ -123,10 +123,11 @@ Route::post('/product-submit', function (Request $request) {
     return redirect()->route('product.index')->with('success', 'เพิ่มสินค้าแล้ว!');
 })->name('product.submit');
 
-// admin news routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
+// admin news routes (ให้ทุกคนเข้าถึงได้ ไม่จำกัดเฉพาะแอดมิน)
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('news', AdminNewsController::class);
 });
+
 use App\Http\Controllers\DashboardController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth']);
