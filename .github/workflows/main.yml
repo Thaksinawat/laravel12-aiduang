@@ -20,7 +20,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www/thaksinawat.csbootstrap.com/laravel12-app
+          cd /var/www/thaksinawat.csbootstrap.com/laravel12-aiduang
           git fetch origin main
           git reset --hard HEAD
           git merge -X theirs origin/main
